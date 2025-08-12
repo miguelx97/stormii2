@@ -20,17 +20,11 @@ export default function App() {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
-            headerStyle: {
-              backgroundColor: '#f8fafc',
-            },
-            headerTintColor: '#1f2937',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
+            headerShown: false,
           }}>
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Stormii Home' }} />
-          <Stack.Screen name="Result" component={ResultScreen} options={{ title: 'Results' }} />
-          <Stack.Screen name="Blog" component={BlogScreen} options={{ title: 'Blog' }} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Result" component={ResultScreen} />
+          <Stack.Screen name="Blog" component={BlogScreen} />
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>

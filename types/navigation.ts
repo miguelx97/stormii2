@@ -1,5 +1,5 @@
 export type RootStackParamList = {
     Home: undefined;
-    Result: undefined;
+    Result: { timeInMs: number };
     Blog: undefined;
 };

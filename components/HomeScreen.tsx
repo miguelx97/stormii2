@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../types/navigation';
+import { Zap, Clock, RotateCcw, Menu, Newspaper } from 'lucide-react-native';
+import Button from './ui/button';
 import {
   View,
   Text,
@@ -8,11 +14,6 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../types/navigation';
-import { Zap, Clock, RotateCcw, Menu, Newspaper } from 'lucide-react-native';
-import Button from './ui/button';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 

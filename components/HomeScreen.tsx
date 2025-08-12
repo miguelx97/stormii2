@@ -11,7 +11,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types/navigation';
-import { Zap, Clock, RotateCcw, Menu, History, FileText } from 'lucide-react-native';
+import { Zap, Clock, RotateCcw, Menu, Newspaper } from 'lucide-react-native';
+import Button from './ui/button';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -27,15 +28,16 @@ export default function HomeScreen() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
 
-  const screenData = Dimensions.get('window');
-  const isLandscape = screenData.width > screenData.height;
-  const isLargeScreen = screenData.width > 800;
+  // Get screen dimensions to determine which background image to use
+  const { width: screenWidth } = Dimensions.get('window');
+  const backgroundImage =
+    screenWidth > 800 ? require('../assets/bg-landscape.jpg') : require('../assets/bg.jpg');
 
   const formatTime = (milliseconds: number): string => {
     const seconds = Math.floor(milliseconds / 1000);
     const ms = Math.floor((milliseconds % 1000) / 10); // Get centiseconds (10ms precision)
 
-    return `${seconds.toString().padStart(2, '0')}.${ms.toString().padStart(2, '0')}`;
+    return `${seconds.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
   };
 
   const startStopwatch = useCallback(() => {
@@ -71,8 +73,19 @@ export default function HomeScreen() {
       intervalRef.current = null;
     }
     setStopwatch({ time: 0, isRunning: false });
+    setManualTime('');
     startTimeRef.current = null;
   }, []);
+
+  const handleMainButton = () => {
+    if (stopwatch.isRunning) {
+      stopStopwatch();
+    } else if (stopwatch.time > 0) {
+      resetStopwatch();
+    } else {
+      startStopwatch();
+    }
+  };
 
   const handleCalculate = () => {
     let timeToUse = 0;
@@ -105,7 +118,7 @@ export default function HomeScreen() {
     } else if (stopwatch.isRunning) {
       return { text: 'TERMINA CUANDO\nESCUCHES EL TRUENO', icon: Clock };
     } else {
-      return { text: 'CONTINUAR CUANDO\nVEAS EL RAYO', icon: Zap };
+      return { text: 'REINICIAR\nCRONÓMETRO', icon: RotateCcw };
     }
   };
 
@@ -115,65 +128,35 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={
-        isLargeScreen || isLandscape
-          ? require('../assets/bg-landscape.jpg')
-          : require('../assets/bg.jpg')
-      }
-      className="flex-1"
+      source={backgroundImage}
+      className="h-full w-full flex-1 items-center justify-center"
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
       resizeMode="cover">
       {/* Main Content */}
-      <View
-        className="flex-1 items-center justify-center px-6"
-        style={{ maxWidth: 500, alignSelf: 'center', width: '100%' }}>
+      <View className="w-full max-w-[500px] flex-1 items-center justify-start gap-14 pt-20">
         {/* Title */}
-        <View style={{ marginVertical: screenData.height * 0.09 }}>
-          <Text
-            className="text-center uppercase tracking-[2px] text-white"
-            style={{
-              fontSize: 32,
-              fontWeight: 'bold',
-              textShadowColor: 'rgba(0, 0, 0, 0.75)',
-              textShadowOffset: { width: -1, height: 1 },
-              textShadowRadius: 10,
-            }}>
+        <View className="my-15">
+          <Text className="text-center font-michroma text-2xl uppercase tracking-[2px] text-white">
             STORMII
           </Text>
         </View>
 
         {/* Timer Section */}
         <View
-          className={hasManualInput ? 'opacity-20' : ''}
+          className={`${hasManualInput ? 'opacity-20' : ''} gap-4`}
           pointerEvents={hasManualInput ? 'none' : 'auto'}>
           {/* Timer Button */}
-          <TouchableOpacity
-            className="mb-4 items-center justify-center rounded-2xl bg-black/20 opacity-80"
-            style={{ width: 200, height: 100 }}
-            onPress={stopwatch.isRunning ? stopStopwatch : startStopwatch}>
-            <Text
-              className="mb-2 text-center uppercase text-white"
-              style={{
-                fontSize: 12,
-                lineHeight: 18,
-                fontFamily: 'IBMPlexSansArabic',
-                letterSpacing: 2,
-              }}>
-              {buttonContent.text}
-            </Text>
+          <Button onPress={handleMainButton} className="max-w-60">
+            {buttonContent.text}
             <buttonContent.icon size={30} color="white" />
-          </TouchableOpacity>
+          </Button>
 
           {/* Timer Display */}
           <View className="mb-4">
-            <Text
-              className="text-center text-white"
-              style={{
-                fontSize: 50,
-                fontFamily: 'MajorMonoDisplay',
-                textShadowColor: 'rgba(0, 0, 0, 0.75)',
-                textShadowOffset: { width: -1, height: 1 },
-                textShadowRadius: 10,
-              }}>
+            <Text className="text-center font-major-mono text-5xl text-white">
               {formatTime(stopwatch.time)}
             </Text>
           </View>
@@ -181,17 +164,15 @@ export default function HomeScreen() {
 
         {/* Manual Input Section */}
         <View
-          className={hasTimer ? 'opacity-20' : ''}
-          style={{ width: 300, marginVertical: screenData.height * 0.09 }}
+          className={`my-15 w-60 ${hasTimer ? 'opacity-20' : ''}`}
           pointerEvents={hasTimer ? 'none' : 'auto'}>
           <View className="mb-4 flex-row items-center justify-center">
-            <Clock size={16} color="rgba(255, 255, 255, 0.6)" style={{ marginRight: 7 }} />
+            <Clock size={16} color="rgba(255, 255, 255, 0.6)" className="mr-[7px]" />
             <Text className="text-center text-sm text-white/60">Inserta segundos manualmente</Text>
           </View>
           <View className="border-b border-white/30 bg-transparent">
             <TextInput
-              className="py-3 text-center text-white"
-              style={{ fontSize: 16 }}
+              className="py-3 text-center text-base text-white outline-none"
               placeholder="0.00"
               value={manualTime}
               onChangeText={setManualTime}
@@ -203,64 +184,28 @@ export default function HomeScreen() {
         </View>
 
         {/* Calculate Button */}
-        <TouchableOpacity
-          className="items-center justify-center rounded-2xl bg-black/20 opacity-80"
-          style={{ width: 200, marginTop: screenData.height * 0.09 }}
-          onPress={handleCalculate}>
-          <Text
-            className="py-4 text-center uppercase text-white"
-            style={{
-              fontSize: 16,
-              fontFamily: 'IBMPlexSansArabic',
-              letterSpacing: 2,
-              fontWeight: 'bold',
-            }}>
-            CALCULAR
-          </Text>
-        </TouchableOpacity>
-
-        {/* Reset Button */}
-        {hasTimer && (
-          <TouchableOpacity
-            className="mt-4 items-center justify-center rounded-xl bg-white/20 px-6 py-2"
-            onPress={resetStopwatch}>
-            <View className="flex-row items-center">
-              <RotateCcw size={16} color="white" />
-              <Text className="ml-2 uppercase text-white" style={{ letterSpacing: 1 }}>
-                RESET
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        <Button onPress={handleCalculate} className="w-60">
+          CALCULAR
+        </Button>
       </View>
 
       {/* Floating Action Buttons */}
       {/* Menu Button - Top Right */}
       <TouchableOpacity
-        className="absolute rounded-full bg-black/30 p-3"
-        style={{ top: 40, right: 20 }}
+        className="absolute right-5 top-5 rounded-full bg-black/10 p-3"
         onPress={() => {
           /* Add menu functionality */
         }}>
         <Menu size={20} color="rgba(255, 255, 255, 0.8)" />
       </TouchableOpacity>
 
-      {/* History Button - Bottom Right */}
-      <TouchableOpacity
-        className="absolute rounded-full bg-black/30 p-3"
-        style={{ bottom: 40, right: 20 }}
-        onPress={() => navigation.navigate('Result', { timeInMs: 1000 })}>
-        <History size={20} color="rgba(255, 255, 255, 0.8)" />
-      </TouchableOpacity>
-
       {/* Blog Button - Top Left */}
       <TouchableOpacity
-        className="absolute rounded-full bg-black/30 p-3"
-        style={{ top: 40, left: 20 }}
+        className="absolute left-5 top-5 rounded-full bg-black/10 p-3"
         onPress={() => {
           /* Add blog navigation */
         }}>
-        <FileText size={20} color="rgba(255, 255, 255, 0.8)" />
+        <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
       </TouchableOpacity>
     </ImageBackground>
   );

@@ -1,14 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../types/navigation';
-
-type BlogScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Blog'>;
+import { router } from 'expo-router';
 
 export default function BlogScreen() {
-  const navigation = useNavigation<BlogScreenNavigationProp>();
-
   const blogPosts = [
     {
       id: 1,
@@ -49,7 +43,7 @@ export default function BlogScreen() {
 
         <TouchableOpacity
           className="mt-6 rounded-lg bg-green-500 p-4 shadow-lg"
-          onPress={() => navigation.goBack()}>
+          onPress={() => router.back()}>
           <Text className="text-center text-lg font-semibold text-white">Back to Home</Text>
         </TouchableOpacity>
       </ScrollView>

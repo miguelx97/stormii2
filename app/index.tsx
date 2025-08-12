@@ -1,10 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../types/navigation';
+import { router } from 'expo-router';
 import { Zap, Clock, RotateCcw, Menu, Newspaper } from 'lucide-react-native';
-import Button from './ui/button';
+import Button from '../components/ui/button';
 import {
   View,
   Text,
@@ -15,15 +12,12 @@ import {
   Dimensions,
 } from 'react-native';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
-
 interface StopwatchState {
   time: number;
   isRunning: boolean;
 }
 
 export default function HomeScreen() {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
   const [stopwatch, setStopwatch] = useState<StopwatchState>({ time: 0, isRunning: false });
   const [manualTime, setManualTime] = useState<string>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -110,7 +104,10 @@ export default function HomeScreen() {
       return;
     }
 
-    navigation.navigate('Result', { timeInMs: timeToUse });
+    router.push({
+      pathname: '/result',
+      params: { time: timeToUse.toString() },
+    });
   };
 
   const getButtonText = () => {
@@ -203,9 +200,7 @@ export default function HomeScreen() {
       {/* Blog Button - Top Left */}
       <TouchableOpacity
         className="absolute left-5 top-5 rounded-full bg-black/10 p-3"
-        onPress={() => {
-          /* Add blog navigation */
-        }}>
+        onPress={() => router.push('/blog')}>
         <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
       </TouchableOpacity>
     </ImageBackground>

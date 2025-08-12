@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, Dimensions, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../types/navigation';
-import { ArrowLeft, ChevronLeft, History, Info } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Alert } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ChevronLeft, Info } from 'lucide-react-native';
 import { measuresService } from '../services/MeasuresService';
-
-type ResultScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Result'>;
-type ResultScreenRouteProp = RouteProp<RootStackParamList, 'Result'>;
 
 interface Thunder {
   id?: string;
@@ -39,9 +33,7 @@ const MapComponent: React.FC<{ radius: number; location?: { lat: number; lng: nu
 };
 
 export default function ResultScreen() {
-  const navigation = useNavigation<ResultScreenNavigationProp>();
-  const route = useRoute<ResultScreenRouteProp>();
-  const { timeInMs } = route.params;
+  const { time: timeInMs } = useLocalSearchParams<{ time: string }>();
 
   const [thunder, setThunder] = useState<Thunder | null>(null);
   const [distanceResult, setDistanceResult] = useState<string>('');
@@ -49,8 +41,12 @@ export default function ResultScreen() {
   const [distanceInMeters, setDistanceInMeters] = useState<number>(0);
 
   useEffect(() => {
+    if (!timeInMs) return;
+
+    const timeMs = parseFloat(timeInMs);
+
     // Calculate distance using the measures service
-    const result = measuresService.calculateDistanceFromThunder(timeInMs);
+    const result = measuresService.calculateDistanceFromThunder(timeMs);
 
     // Create thunder object
     const thunderData: Thunder = {
@@ -83,12 +79,7 @@ export default function ResultScreen() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
-  };
-
-  const handleHistory = () => {
-    // Navigate to history screen when implemented
-    Alert.alert('Historial', 'Función de historial próximamente');
+    router.back();
   };
 
   if (!thunder) {

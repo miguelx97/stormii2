@@ -4,7 +4,15 @@ module.exports = {
 
   presets: [require('nativewind/preset')],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'major-mono': ['MajorMonoDisplay_400Regular'],
+        michroma: ['Michroma_400Regular'],
+        'ibm-arabic': ['IBMPlexSansArabic_400Regular'],
+        'ibm-arabic-medium': ['IBMPlexSansArabic_500Medium'],
+        'ibm-arabic-bold': ['IBMPlexSansArabic_700Bold'],
+      },
+    },
   },
   plugins: [],
 };

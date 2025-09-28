@@ -134,7 +134,7 @@ export default function HomeScreen() {
       }}
       resizeMode="cover">
       {/* Main Content */}
-      <View className="w-full max-w-[500px] flex-1 items-center justify-start gap-14 pt-20">
+      <View className="h-full w-full max-w-[500px] flex-1 items-center justify-center gap-20">
         {/* Title */}
         <View className="my-15">
           <Text className="text-center font-michroma text-2xl uppercase tracking-[2px] text-white">

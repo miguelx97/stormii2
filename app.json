@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "stormii2",
-    "slug": "stormii2",
+    "name": "Stormii",
+    "slug": "stormii",
     "version": "1.0.0",
-    "scheme": "stormii2",
+    "scheme": "stormii",
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -11,7 +11,19 @@
       "tsconfigPaths": true
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "react-native-maps",
+        {
+          "useGoogleMaps": true
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Esta aplicación necesita acceso a tu ubicación para mostrar dónde cayó el rayo en el mapa."
+        }
+      ]
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,18 +33,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyAwkZJnCHLRh3UdGG0r2uHGKg8SZmIPogI"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vume.stormii2"
+      "package": "com.stormii.app",
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAwkZJnCHLRh3UdGG0r2uHGKg8SZmIPogI"
+        }
+      }
     }
   }
 }

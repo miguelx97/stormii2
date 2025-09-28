@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Container from '~/components/container';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface StopwatchState {
   time: number;
@@ -24,7 +24,6 @@ export default function HomeScreen() {
   const [manualTime, setManualTime] = useState<string>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
-  const safeAreaTop: number = useSafeAreaInsets().top;
 
   // Get screen dimensions to determine which background image to use
   const { width: screenWidth } = Dimensions.get('window');
@@ -128,7 +127,7 @@ export default function HomeScreen() {
   const hasManualInput = manualTime.trim() !== '';
 
   return (
-    <View className="hola relative h-full w-full">
+    <View className="h-full w-full">
       <ImageBackground
         source={backgroundImage}
         className="h-full w-full flex-1 items-center justify-center"
@@ -196,29 +195,20 @@ export default function HomeScreen() {
       </ImageBackground>
 
       {/* Floating Action Buttons */}
-      <View
-        className={`absolute w-full px-4`}
-        style={{
-          top: Number(safeAreaTop.toFixed(0)) + 14,
-        }}>
-        <View className="w-full flex-row justify-between">
-          {/* Menu Button - Top Right */}
-          <TouchableOpacity
-            className="rounded-full bg-black/10 p-3"
-            onPress={() => {
-              /* Add menu functionality */
-            }}>
-            <Menu size={20} color="rgba(255, 255, 255, 0.8)" />
-          </TouchableOpacity>
-
-          {/* Blog Button - Top Left */}
-          <TouchableOpacity
-            className="rounded-full bg-black/10 p-3"
-            onPress={() => router.push('/blog')}>
-            <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <SafeAreaView className="absolute top-0 w-full flex-row justify-between px-4 pt-2">
+        <TouchableOpacity
+          className="rounded-full bg-black/10 p-3"
+          onPress={() => router.push('/blog')}>
+          <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="rounded-full bg-black/10 p-3"
+          onPress={() => {
+            /* Add menu functionality */
+          }}>
+          <Menu size={20} color="rgba(255, 255, 255, 0.8)" />
+        </TouchableOpacity>
+      </SafeAreaView>
     </View>
   );
 }

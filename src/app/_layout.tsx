@@ -10,7 +10,7 @@ import {
   IBMPlexSansArabic_700Bold,
 } from '@expo-google-fonts/ibm-plex-sans-arabic';
 
-import '../global.css';
+import '../../global.css';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

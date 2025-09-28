@@ -11,6 +11,8 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
+import Container from '~/components/container';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface StopwatchState {
   time: number;
@@ -22,6 +24,7 @@ export default function HomeScreen() {
   const [manualTime, setManualTime] = useState<string>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
+  const safeAreaTop: number = useSafeAreaInsets().top;
 
   // Get screen dimensions to determine which background image to use
   const { width: screenWidth } = Dimensions.get('window');
@@ -125,84 +128,97 @@ export default function HomeScreen() {
   const hasManualInput = manualTime.trim() !== '';
 
   return (
-    <ImageBackground
-      source={backgroundImage}
-      className="h-full w-full flex-1 items-center justify-center"
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
-      resizeMode="cover">
-      {/* Main Content */}
-      <View className="h-full w-full max-w-[500px] flex-1 items-center justify-center gap-20">
-        {/* Title */}
-        <View className="my-15">
-          <Text className="text-center font-michroma text-2xl uppercase tracking-[2px] text-white">
-            STORMII
-          </Text>
-        </View>
-
-        {/* Timer Section */}
-        <View
-          className={`${hasManualInput ? 'opacity-20' : ''} gap-4`}
-          pointerEvents={hasManualInput ? 'none' : 'auto'}>
-          {/* Timer Button */}
-          <Button onPress={handleMainButton} className="max-w-60">
-            {buttonContent.text}
-            <buttonContent.icon size={30} color="white" />
-          </Button>
-
-          {/* Timer Display */}
-          <View className="mb-4">
-            <Text className="text-center font-major-mono text-5xl text-white">
-              {formatTime(stopwatch.time)}
+    <View className="hola relative h-full w-full">
+      <ImageBackground
+        source={backgroundImage}
+        className="h-full w-full flex-1 items-center justify-center"
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        resizeMode="cover">
+        {/* Main Content */}
+        <Container className="h-full items-center justify-center gap-20">
+          {/* Title */}
+          <View className="my-15">
+            <Text className="text-center font-michroma text-2xl uppercase tracking-[2px] text-white">
+              STORMII
             </Text>
           </View>
-        </View>
 
-        {/* Manual Input Section */}
-        <View
-          className={`my-15 w-60 ${hasTimer ? 'opacity-20' : ''}`}
-          pointerEvents={hasTimer ? 'none' : 'auto'}>
-          <View className="mb-4 flex-row items-center justify-center">
-            <Clock size={16} color="rgba(255, 255, 255, 0.6)" className="mr-[7px]" />
-            <Text className="text-center text-sm text-white/60">Inserta segundos manualmente</Text>
-          </View>
-          <View className="border-b border-white/30 bg-transparent">
-            <TextInput
-              className="py-3 text-center text-base text-white outline-none"
-              placeholder="0.00"
-              value={manualTime}
-              onChangeText={setManualTime}
-              keyboardType="numeric"
-              placeholderTextColor="rgba(255, 255, 255, 0.4)"
-              editable={!hasTimer}
-            />
-          </View>
-        </View>
+          {/* Timer Section */}
+          <View
+            className={`${hasManualInput ? 'opacity-20' : ''} gap-4`}
+            pointerEvents={hasManualInput ? 'none' : 'auto'}>
+            {/* Timer Button */}
 
-        {/* Calculate Button */}
-        <Button onPress={handleCalculate} className="w-60">
-          CALCULAR
-        </Button>
-      </View>
+            <Button onPress={handleMainButton} className="max-w-60 flex-col items-center gap-2">
+              <Text className="text-center text-white">{buttonContent.text}</Text>
+              <buttonContent.icon size={30} color="white" />
+            </Button>
+
+            {/* Timer Display */}
+            <View className="mb-4">
+              <Text className="text-center font-major-mono text-5xl text-white">
+                {formatTime(stopwatch.time)}
+              </Text>
+            </View>
+          </View>
+
+          {/* Manual Input Section */}
+          <View
+            className={`my-15 w-60 ${hasTimer ? 'opacity-20' : ''}`}
+            pointerEvents={hasTimer ? 'none' : 'auto'}>
+            <View className="mb-4 flex-row items-center justify-center">
+              <Clock size={16} color="rgba(255, 255, 255, 0.6)" className="mr-[7px]" />
+              <Text className="text-center text-sm text-white/60">
+                Inserta segundos manualmente
+              </Text>
+            </View>
+            <View className="border-b border-white/30 bg-transparent">
+              <TextInput
+                className="py-3 text-center text-base text-white outline-none"
+                placeholder="0.00"
+                value={manualTime}
+                onChangeText={setManualTime}
+                keyboardType="numeric"
+                placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                editable={!hasTimer}
+              />
+            </View>
+          </View>
+
+          {/* Calculate Button */}
+          <Button onPress={handleCalculate} className="w-60">
+            CALCULAR
+          </Button>
+        </Container>
+      </ImageBackground>
 
       {/* Floating Action Buttons */}
-      {/* Menu Button - Top Right */}
-      <TouchableOpacity
-        className="absolute right-5 top-5 rounded-full bg-black/10 p-3"
-        onPress={() => {
-          /* Add menu functionality */
+      <View
+        className={`absolute w-full px-4`}
+        style={{
+          top: Number(safeAreaTop.toFixed(0)) + 14,
         }}>
-        <Menu size={20} color="rgba(255, 255, 255, 0.8)" />
-      </TouchableOpacity>
+        <View className="w-full flex-row justify-between">
+          {/* Menu Button - Top Right */}
+          <TouchableOpacity
+            className="rounded-full bg-black/10 p-3"
+            onPress={() => {
+              /* Add menu functionality */
+            }}>
+            <Menu size={20} color="rgba(255, 255, 255, 0.8)" />
+          </TouchableOpacity>
 
-      {/* Blog Button - Top Left */}
-      <TouchableOpacity
-        className="absolute left-5 top-5 rounded-full bg-black/10 p-3"
-        onPress={() => router.push('/blog')}>
-        <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
-      </TouchableOpacity>
-    </ImageBackground>
+          {/* Blog Button - Top Left */}
+          <TouchableOpacity
+            className="rounded-full bg-black/10 p-3"
+            onPress={() => router.push('/blog')}>
+            <Newspaper size={20} color="rgba(255, 255, 255, 0.8)" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
